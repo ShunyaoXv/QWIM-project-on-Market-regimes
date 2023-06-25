@@ -1,0 +1,203 @@
+\let\counterwithout\relax
+\let\counterwithin\relax
+
+\usepackage{chngcntr}
+\usepackage{ifthen}
+\usepackage{graphicx}
+\usepackage{fontawesome}
+\usepackage{etoolbox}
+\usepackage{fancybox}
+\usepackage{url}
+\usepackage{pdfsync}
+\usepackage[nottoc]{tocbibind}
+\usepackage{xcolor}
+\usepackage[colorlinks=true]{hyperref}
+\usepackage{polyglossia}
+ \setmainlanguage{english}
+\usepackage[style=authoryear,giveninits=true,dashed=false,isbn=false,doi=false,eprint=false,maxbibnames=99,maxcitenames=2,uniquelist=false,uniquename=false,url=false,date=year]{biblatex}
+
+
+%% https://tex.stackexchange.com/questions/187643/biblatex-how-can-i-suppress-some-fields-for-multiple-entry-types
+% \AtEveryBibitem{\ifthenelse{\ifentrytype{book}\OR\ifentrytype{collection}\OR\ifentrytype{journaltitle}\OR\ifentrytype{incollection}}{\clearfield{urlyear}\clearfield{review}\clearfield{series}}{}}
+
+
+\definecolor{darkblue}{rgb}{0,0,0.8}
+\definecolor{BlueViolet}{RGB}{138,43,226}
+\definecolor{HunterGreen}{rgb}{0.58,0.15,0.26}
+\definecolor{VeryDarkViolet}{RGB}{76,12,132}
+\definecolor{Purple}{RGB}{128,0,128}
+\definecolor{SeaGreen}{RGB}{46,139,87}
+\definecolor{DarkSlateGrey}{RGB}{47,79,79}
+\definecolor{Magenta}{RGB}{255,0,255}
+\definecolor{DarkBlue}{RGB}{0,0,139}
+\definecolor{DarkSlateBlue}{rgb}{72,61,139}
+\definecolor{Navy}{rgb}{0,0,128}
+\definecolor{MidnightBlue}{rgb}{25,25,112}
+\definecolor{Maroon}{rgb}{128,0,0}
+\definecolor{Plum}{rgb}{.5,0,1}
+\definecolor{White}{rgb}{255,255,255}
+\definecolor{ArylideYellow}{rgb}{233,214,107}
+\definecolor{DarkViolet}{rgb}{148,0,211}
+\definecolor{DarkScarlet}{rgb}{86,3,25}
+\definecolor{BostonUnivRed}{rgb}{204,0,0}
+\definecolor{Cerulean}{rgb}{0,123,167}
+\definecolor{CeruleanBlue}{rgb}{0.16,0.32,0.75}
+\definecolor{BrandeisBlue}{rgb}{0.0,0.44,1.0}
+\definecolor{BallBlue}{rgb}{0.13,0.67,0.8}
+\definecolor{BurntUmber}{rgb}{138,51,36}
+\definecolor{Rosewood}{rgb}{101,0,11}
+\definecolor{SpringBud}{rgb}{167,252,0}
+\definecolor{Violet}{rgb}{143,0,255}
+\definecolor{Bazaar}{rgb}{152,119,123}
+\definecolor{BananaYellow}{rgb}{1.0,0.88,0.21}
+\definecolor{Aureolin}{rgb}{0.99,0.93,0.0}
+\definecolor{ArylideYellow}{rgb}{0.91,0.84,0.42}
+\definecolor{Amber}{rgb}{1.0,0.75,0.0}
+\definecolor{Amethyst}{rgb}{0.6,0.4,0.8}
+\definecolor{Asparagus}{rgb}{0.53,0.66,0.42}
+\definecolor{ArmyGreen}{rgb}{0.29,0.33,0.13}
+\definecolor{CadmiumGreen}{rgb}{0.0,0.42,0.24}
+\definecolor{CadmiumRed}{rgb}{0.89,0.0,0.13}
+\definecolor{BrilliantLavender}{rgb}{0.96, 0.73, 1.0}
+\definecolor{BrightCerulean}{rgb}{0.11, 0.67, 0.84}
+\definecolor{Capri}{rgb}{0.0, 0.75, 1.0}
+\definecolor{CelestialBlue}{rgb}{0.29, 0.59, 0.82}
+
+%\definecolor{colorForCitedReferences}{RGB}{153,51,51}
+\definecolor{colorForCitedReferences}{RGB}{0,51,204}
+
+\hypersetup{
+  	colorlinks=true,
+    citecolor=colorForCitedReferences,  	
+    filecolor=black,
+    linkcolor=blue,
+    urlcolor=blue
+}
+
+\graphicspath {{graphics}}  % th efolder where all images, plots, graphs, etc are stored
+
+%% to force all inline math to look the same as math in equations (large integral signs, full-size numerator and denominator in fractions etc).
+
+\everymath{\displaystyle}
+%% \usepackage{tocstyle}
+%% replaced by tocbasis April 2021
+\usepackage{tocbasic}
+
+\setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{3}
+
+\AtBeginDocument{%
+\DeclareNameAlias{sortname}{family-given}%
+}
+
+% https://tex.stackexchange.com/questions/361414/link-button-instead-of-complete-url-in-bibliography
+% \AtBeginEnvironment{thebibliography}{\def\url#1{\href{#1}{\faExternalLink}}}
+% \DeclareFieldFormat{url}{\mkbibacro{URL}\addcolon\space\href{#1}{\faExternalLink}}
+
+% https://tex.stackexchange.com/questions/48400/biblatex-make-title-hyperlink-to-dois-url-or-isbn/48409#48409
+% https://tex.stackexchange.com/questions/471424/how-to-make-biblatex-biber-aware-of-url-field-in-phdthesis
+\newbibmacro{string+doiurlisbn}[1]{%
+  \iffieldundef{doi}{%
+    \iffieldundef{url}{%
+      \iffieldundef{isbn}{%
+        \iffieldundef{issn}{%
+          #1%
+        }{%
+          \href{http://books.google.com/books?vid=ISSN\thefield{issn}}{#1}%
+        }%
+      }{%
+        \href{http://books.google.com/books?vid=ISBN\thefield{isbn}}{#1}%
+      }%
+    }{%
+      \href{\thefield{url}}{#1}%
+    }%
+  }{%
+    \href{http://dx.doi.org/\thefield{doi}}{#1}%
+  }%
+}
+
+
+\DeclareFieldFormat{title}{%
+  \usebibmacro{string+doiurlisbn}{\mkbibemph{#1}}}
+\DeclareFieldFormat
+  [article,inbook,incollection,inproceedings,patent,thesis,unpublished]
+  {title}{\usebibmacro{string+doiurlisbn}{\mkbibquote{#1\isdot}}}
+\DeclareFieldFormat
+  [suppbook,suppcollection,suppperiodical]
+  {title}{\usebibmacro{string+doiurlisbn}{#1}}
+
+
+%% https://tex.stackexchange.com/questions/97722/enclosing-issue-number-in-parentheses
+\usepackage{xpatch}
+
+% No dot before number of articles
+\xpatchbibmacro{volume+number+eid}{%
+  \setunit*{\adddot}%
+}{%
+}{}{}
+
+% Number of articles in parentheses
+\DeclareFieldFormat[article]{number}{\mkbibparens{#1}}
+
+%% http://tex.stackexchange.com/questions/60209/how-to-add-an-extra-level-of-sections-with-headings-below-subsubsection
+\makeatletter
+\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+            {-2.5ex\@plus -1ex \@minus -.25ex}%
+            {1.25ex \@plus .25ex}%
+            {\normalfont\normalsize\bfseries}}
+\makeatother
+
+%%  the lines below change how the numbered list appears. Possible choices are shown after the next 4 lines
+\renewcommand{\labelenumi}{\arabic{enumi})}
+\renewcommand{\labelenumii}{\arabic{enumi}.\alph{enumii})}
+\renewcommand{\labelenumiii}{\arabic{enumi}.\alph{enumii}.\Roman{enumiii})}
+\renewcommand{\labelenumiv}{\arabic{enumi}.\alph{enumii}.\Roman{enumiii}.\Alph{enumiv})}
+
+%% for author and year hyperlink
+%% https://tex.stackexchange.com/questions/15951/hyperlink-name-with-biblatex-authoryear-biblatex-1-4b
+\DeclareFieldFormat{citehyperref}{%
+  \DeclareFieldAlias{bibhyperref}{noformat}% Avoid nested links
+  \bibhyperref{#1}}
+
+\DeclareFieldFormat{textcitehyperref}{%
+  \DeclareFieldAlias{bibhyperref}{noformat}% Avoid nested links
+  \bibhyperref{%
+    #1%
+    \ifbool{cbx:parens}
+      {\bibcloseparen\global\boolfalse{cbx:parens}}
+      {}}}
+
+\savebibmacro{cite}
+\savebibmacro{textcite}
+
+\renewbibmacro*{cite}{%
+  \printtext[citehyperref]{%
+    \restorebibmacro{cite}%
+    \usebibmacro{cite}}}
+
+\renewbibmacro*{textcite}{%
+  \ifboolexpr{
+    ( not test {\iffieldundef{prenote}} and
+      test {\ifnumequal{\value{citecount}}{1}} )
+    or
+    ( not test {\iffieldundef{postnote}} and
+      test {\ifnumequal{\value{citecount}}{\value{citetotal}}} )
+  }
+    {\DeclareFieldAlias{textcitehyperref}{noformat}}
+    {}%
+  \printtext[textcitehyperref]{%
+    \restorebibmacro{textcite}%
+    \usebibmacro{textcite}}}
+
+
+%% change color journaltitle in bibliography
+%% \DeclareFieldFormat[article]{journaltitle}{\mkbibemph{\textcolor[rgb]{0.5803,0,0.8274}{#1}}}
+\DeclareFieldFormat[article]{journaltitle}{\mkbibemph{\color{DarkViolet}{#1}}}
+\DeclareFieldFormat[inbook,incollection,inproceedings]{booktitle}{\mkbibemph{\color{DarkViolet}{#1}}}
+
+%% https://tex.stackexchange.com/questions/121684/citestyle-authortitle-icomp-but-including-year
+\renewbibmacro*{cite:title}{%
+  \printtext[bibhyperref]{%
+    \printfield[citetitle]{labeltitle}%
+    \setunit{\addcomma\space}%
+    \printdate}}
